@@ -93,13 +93,13 @@ app.get('/leaderboard', async (req, res) => {
 
 });
 
-app.get('/leaderboard/:id/rank', async (req, res) => {
+app.get('/liveleaderboard/:id/rank', async (req, res) => {
 
     const userId = parseInt(req.params.id);
 
-    const user = user.find((u) => u.id === userId);
+    const FoundUser = user.find((u) => u.id === userId);
 
-    if (!user) {
+    if (!FoundUser) {
         return res.status(404).json({
             error: "User not found"
         });
@@ -107,7 +107,7 @@ app.get('/leaderboard/:id/rank', async (req, res) => {
 
     const rank = await redis.zrevrank(
         "leaderboard",
-        user.name
+        FoundUser.name
     );
 
     if (rank === null) {
@@ -119,7 +119,7 @@ app.get('/leaderboard/:id/rank', async (req, res) => {
     }
 
     res.json({
-        user: user.name,
+        user: FoundUser.name,
         rank: rank + 1
     });
 
